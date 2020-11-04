@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {# Commenter en twig : reprendre le contenu du block parent et y ajouter qqch en plus #}
+    {{ parent() }} - Création de job
+{% endblock %}
+
+{% block body %}
+    <main role="main">
+        <div class="jumbotron">
+            <div class="container">
+                <div class="col-12">
+                    {# afficher un formulaire en une seule fois #}
+                    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                    {{ form_start(form) }}
+                        {{ form_label(form.title) }}
+                        {{ form_widget(form.title, {'attr': {'placeholder': 'Votre blaze'}}) }}
+                        {{ form_errors(form.title) }}
+                        {{ form_help(form.title) }}
+
+                        {{ form_row(form.description) }}
+                        {{ form_row(form.start_at) }}
+
+                        <input type="submit" value="Allez (steve) job" />
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}

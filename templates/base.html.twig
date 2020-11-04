@@ -15,6 +15,15 @@
             'App\\Controller\\HomeController::header'
         )) }}
 
+
+        <div style="margin-top:50px;">
+            {% for type, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
         {% block body %}{% endblock %}
 
         {{ include('footer.html.twig') }}
