@@ -11,7 +11,9 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {{ include('header.html.twig') }}
+        {{ render(controller(
+            'App\\Controller\\HomeController::header'
+        )) }}
 
         {% block body %}{% endblock %}
 

@@ -14,19 +14,41 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
-        $name = "fab";
         $countries = [['France', 'Europe'], ['Pays de Galles', 'Europe'], ['Belgique', 'Europe']];
         $age = 16;
+
         $post = new Post();
         $post->setIsEnabled(true)
-            ->setDescription("La description")
+            ->setDescription("<p>La description 1 caca</p>")
+            ->setCreatedAt(new \DateTime())
             ->setTitle("Titre de mon super article");
+        $posts[] = $post;
+
+        $post = new Post();
+        $post->setIsEnabled(true)
+            ->setCreatedAt(new \DateTime("2020-11-02 14:00:00"))
+            ->setDescription("La description 2 \n Test")
+            ->setTitle("Titre de mon super article");
+        $posts[] = $post;
+
+        $post = new Post();
+        $post->setIsEnabled(true)
+            ->setCreatedAt(new \DateTime("2020-11-04 11:00:00"))
+            ->setDescription("La description 3")
+            ->setTitle("Titre de mon super article");
+        $posts[] = $post;
 
         return $this->render('home/index.html.twig', [
-            'name' => $name,
             'countries' => $countries,
             'age' => $age,
-            'post' => $post
+            'posts' => $posts
+        ]);
+    }
+
+    public function header(): Response
+    {
+        return $this->render('header.html.twig', [
+            'name' => 'Fab'
         ]);
     }
 
