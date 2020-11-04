@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,6 +59,22 @@ class HomeController extends AbstractController
     public function sitemap(): Response
     {
         return $this->render('sitemap.xml.twig', [
+        ]);
+    }
+
+    /**
+     * @Route("/new-post", name="new_post")
+     */
+    public function newPost() {
+        // l'instance que le form doit gérer
+        $post = new Post();
+
+        //création du formulaire
+        $form = $this->createForm(PostType::class, $post);
+
+
+        return $this->render('home/new_post.html.twig', [
+            'formPost' => $form->createView()
         ]);
     }
 }

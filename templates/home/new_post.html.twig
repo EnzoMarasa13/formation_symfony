@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {# Commenter en twig : reprendre le contenu du block parent et y ajouter qqch en plus #}
+    {{ parent() }} - Création de post
+{% endblock %}
+
+{% block body %}
+    <main role="main">
+        <div class="jumbotron">
+            <div class="container">
+                <div class="col-12">
+                    {# afficher un formulaire en une seule fois #}
+                    {% form_theme formPost 'bootstrap_4_layout.html.twig' %}
+                    {# {{ form(formPost) }}#}
+
+                    {# afficher le formulaire en l'ouvrante et en le fermant manuellement #}
+                    {#
+                    {{ form_start(formPost) }}
+                        {{ form_row(formPost) }}
+
+                        <input type="submit" value="Allez" />
+                    {{ form_end(formPost) }}
+                    #}
+
+
+                    {# afficher le formulaire champ par champ #}
+                    {#
+                    {{ form_start(formPost) }}
+                        {{ form_row(formPost.isEnabled) }}
+                        {{ form_row(formPost.title) }}
+                        {{ form_row(formPost.description) }}
+
+                        <input type="submit" value="Allez" />
+                    {{ form_end(formPost) }}
+                    #}
+
+                    {# afficher le formulaire élément de champ par élément champ #}
+                    {{ form_start(formPost) }}
+                        <div class="field-isenabled">
+                            {{ form_label(formPost.isEnabled) }}
+                            {{ form_widget(formPost.isEnabled, {'attr': {'class': 'class-isenabled'}}) }}
+                            {{ form_errors(formPost.isEnabled) }}
+                            {{ form_help(formPost.isEnabled) }}
+                        </div>
+
+                        {{ form_label(formPost.title) }}
+                        {{ form_widget(formPost.title, {'attr': {'placeholder': 'Votre blaze'}}) }}
+                        {{ form_errors(formPost.title) }}
+                        {{ form_help(formPost.title) }}
+
+                        {{ form_row(formPost.description) }}
+
+                        <input type="submit" value="Allez" />
+                    {{ form_end(formPost) }}
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
