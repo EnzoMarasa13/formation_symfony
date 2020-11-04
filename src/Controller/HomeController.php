@@ -6,6 +6,8 @@ use App\Entity\Job;
 use App\Entity\Post;
 use App\Form\JobType;
 use App\Form\PostType;
+use App\Manager\PostManager;
+use App\Service\SlugGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +71,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/new-post", name="new_post")
      */
-    public function newPost(Request $request) {
+    public function newPost(Request $request, SlugGenerator $slugGenerator, PostManager $postManager) {
         // l'instance que le form doit gérer
         $post = new Post();
 
@@ -79,15 +81,13 @@ class HomeController extends AbstractController
         // demander au formulaire d'aller chercher les informations soumises
         $form->handleRequest($request);
 
-
         // formulaire soumis ?
         if ($form->isSubmitted()) {
             // est-ce qu'il est valide ?
             if ($form->isValid()) {
                 // enregistrer en bdd
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($post);
-                $em->flush();
+                $postManager->persist($post);
+
                 // message : flash message en session, retiré de la session dès qu'il est affiché une fois
                 $this->addFlash('success', 'Post bien enregistré !');
 

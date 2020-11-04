@@ -36,12 +36,15 @@ class PostType extends AbstractType
             ])
             //->add('category', CategoryType::class)
             ->add('category', null, ['choice_label' => 'idTitle'])
-            //->add('tags', null, ['by_reference' => false, 'expanded' => true])
-            ->add('tags', CollectionType::class, [
+            ->add('tags', null, ['by_reference' => false, 'expanded' => true])
+            /*
+             *
+             ->add('tags', CollectionType::class, [
                 'entry_type' => TagType::class,
                 'prototype' => true,
                 'allow_add' => true
             ])
+            */
             //->add('valid', SubmitType::class)
         ;
     }
