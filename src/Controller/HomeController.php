@@ -22,6 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -32,15 +33,25 @@ class HomeController extends AbstractController
     /**
      * @Route("/home", name="home")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $countries = [['France', 'Europe'], ['Pays de Galles', 'Europe'], ['Belgique', 'Europe']];
         $age = 16;
 
+        $date = new \DateTime("2020-11-05 12:00:00");
+
+        $response = new Response();
+        $response->setPublic();
+        $response->setLastModified($date);
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
         $post = new Post();
         $post->setIsEnabled(true)
             ->setDescription("<p>La description 1 caca</p>")
-            ->setCreatedAt(new \DateTime())
+            ->setCreatedAt($date)
             ->setTitle("Titre de mon super article");
         $posts[] = $post;
 
@@ -58,11 +69,16 @@ class HomeController extends AbstractController
             ->setTitle("Titre de mon super article");
         $posts[] = $post;
 
-        return $this->render('home/index.html.twig', [
+        $response->setContent($this->render('home/index.html.twig', [
             'countries' => $countries,
             'age' => $age,
             'posts' => $posts
-        ]);
+        ]));
+
+        //$response->setPublic();
+        //$response->setMaxAge(10);
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
+        return $response;
     }
 
     public function header(): Response
@@ -72,9 +88,14 @@ class HomeController extends AbstractController
             'action' => $this->generateUrl('search')
         ]);
 
-        return $this->render('header.html.twig', [
+        $response = $this->render('header.html.twig', [
             'formSearch' => $form->createView()
         ]);
+        $response->setPublic();
+        $response->setMaxAge(10);
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
+
+        return $response;
     }
 
     /**
