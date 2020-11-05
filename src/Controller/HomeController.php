@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Job;
 use App\Entity\Post;
+use App\Event\JobEvent;
 use App\Form\JobType;
 use App\Form\PostType;
 use App\Form\RechercheType;
@@ -13,6 +14,7 @@ use App\Service\FileUploader;
 use App\Service\SlugGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -125,7 +127,7 @@ class HomeController extends AbstractController
     /**
      * @Route("/new-job", name="new_job")
      */
-    public function newJob(Request $request) {
+    public function newJob(Request $request, EventDispatcherInterface $eventDispatcher) {
         // l'instance que le form doit gérer
         $job = new Job();
 
@@ -144,6 +146,11 @@ class HomeController extends AbstractController
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($job);
                 $em->flush();
+
+                // dispatcher l'evenement de création de job
+
+                $eventDispatcher->dispatch(new JobEvent($job), JobEvent::NAME);
+
                 // message : flash message en session, retiré de la session dès qu'il est affiché une fois
                 $this->addFlash('success', 'Job bien enregistré !');
 

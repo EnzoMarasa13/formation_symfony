@@ -1,0 +1,28 @@
+<?php
+
+namespace App\EventSubscriber;
+
+use App\Event\JobEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
+
+class KernelSubscriber implements EventSubscriberInterface
+{
+    public function onKernelRequest(RequestEvent $event)
+    {
+        if ($event->isMasterRequest()) {
+            // requete principale
+        }
+        else {
+            // sous requete : render dans un twig
+        }
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::REQUEST => 'onKernelRequest',
+        ];
+    }
+}

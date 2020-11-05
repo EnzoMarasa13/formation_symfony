@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
  * @UniqueEntity("title")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Post
 {
@@ -185,4 +186,10 @@ class Post
         return $this;
     }
 
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist() {
+        $this->setCreatedAt(new \DateTime());
+    }
 }
