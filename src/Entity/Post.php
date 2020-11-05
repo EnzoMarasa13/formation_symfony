@@ -64,6 +64,11 @@ class Post
      */
     private $ImageFilename;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTime());
@@ -191,5 +196,17 @@ class Post
      */
     public function prePersist() {
         $this->setCreatedAt(new \DateTime());
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }

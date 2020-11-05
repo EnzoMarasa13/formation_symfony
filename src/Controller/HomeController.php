@@ -10,10 +10,13 @@ use App\Form\PostType;
 use App\Form\RechercheType;
 use App\Form\SearchType;
 use App\Manager\PostManager;
+use App\Repository\PostRepository;
+use App\Security\Voter\PostVoter;
 use App\Service\FileUploader;
 use App\Service\SlugGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -118,6 +121,51 @@ class HomeController extends AbstractController
 
                 // message : flash message en session, retiré de la session dès qu'il est affiché une fois
                 $this->addFlash('success', 'Post bien enregistré !');
+
+                // rediriger pour éviter de renvoyer une deuxième le même form
+                return $this->redirectToRoute('home');
+            }
+            else {
+                $this->addFlash('danger', 'Une erreur est survenue !');
+            }
+        }
+
+        return $this->render('home/new_post.html.twig', [
+            'formPost' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/create/edit-post/{id}", name="edit_post")
+     */
+    public function editPost(Request $request, PostManager $postManager, FileUploader $fileUploader, Post $post) {
+        // l'instance que le form doit gérer
+        // dans le paramconverter
+        $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+
+        //création du formulaire
+        $form = $this->createForm(PostType::class, $post);
+
+        // demander au formulaire d'aller chercher les informations soumises
+        $form->handleRequest($request);
+
+        // formulaire soumis ?
+        if ($form->isSubmitted()) {
+            // est-ce qu'il est valide ?
+            if ($form->isValid()) {
+                // récupérer l'image uploadée
+                /** @var UploadedFile $image */
+                $image = $form->get('image')->getData();
+                if ($image) {
+                    $filename = $fileUploader->upload($image);
+                    $post->setImageFilename($filename);
+                }
+                
+                // enregistrer en bdd
+                $postManager->persist($post);
+
+                // message : flash message en session, retiré de la session dès qu'il est affiché une fois
+                $this->addFlash('success', 'Post bien modifié !');
 
                 // rediriger pour éviter de renvoyer une deuxième le même form
                 return $this->redirectToRoute('home');
