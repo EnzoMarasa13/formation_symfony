@@ -58,6 +58,11 @@ class Post
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ImageFilename;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTime());
@@ -164,6 +169,18 @@ class Post
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getImageFilename(): ?string
+    {
+        return $this->ImageFilename;
+    }
+
+    public function setImageFilename(?string $ImageFilename): self
+    {
+        $this->ImageFilename = $ImageFilename;
 
         return $this;
     }

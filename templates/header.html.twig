@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="{{ path('home') }}">Home {{ name }}</a>
+                <a class="nav-link" href="{{ path('home') }}">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Posts</a>
@@ -23,9 +23,13 @@
                 <a class="nav-link" href="{{ path('new_job') }}">New job</a>
             </li>
         </ul>
+
+        {#
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        #}
+        {{ form(formSearch) }}
     </div>
 </nav>

@@ -12,7 +12,6 @@ class SlugGenerator implements SluggerInterface
 {
     public function slug(string $string, string $separator = '-', string $locale = null): AbstractUnicodeString
     {
-        var_dump("coucou");exit;
         $slug = $this->slugify($string);
         return new UnicodeString($slug);
     }

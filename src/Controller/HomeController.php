@@ -6,10 +6,14 @@ use App\Entity\Job;
 use App\Entity\Post;
 use App\Form\JobType;
 use App\Form\PostType;
+use App\Form\RechercheType;
+use App\Form\SearchType;
 use App\Manager\PostManager;
+use App\Service\FileUploader;
 use App\Service\SlugGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -54,8 +58,13 @@ class HomeController extends AbstractController
 
     public function header(): Response
     {
+        $form = $this->createForm(RechercheType::class, null, [
+            'method' => 'GET',
+            'action' => $this->generateUrl('search')
+        ]);
+
         return $this->render('header.html.twig', [
-            'name' => 'Fab'
+            'formSearch' => $form->createView()
         ]);
     }
 
@@ -71,7 +80,8 @@ class HomeController extends AbstractController
     /**
      * @Route("/new-post", name="new_post")
      */
-    public function newPost(Request $request, SlugGenerator $slugGenerator, PostManager $postManager) {
+    public function newPost(Request $request, SlugGenerator $slugGenerator,
+                            PostManager $postManager, FileUploader $fileUploader) {
         // l'instance que le form doit gérer
         $post = new Post();
 
@@ -85,6 +95,14 @@ class HomeController extends AbstractController
         if ($form->isSubmitted()) {
             // est-ce qu'il est valide ?
             if ($form->isValid()) {
+                // récupérer l'image uploadée
+                /** @var UploadedFile $image */
+                $image = $form->get('image')->getData();
+                if ($image) {
+                    $filename = $fileUploader->upload($image);
+                    $post->setImageFilename($filename);
+                }
+
                 // enregistrer en bdd
                 $postManager->persist($post);
 
@@ -139,6 +157,25 @@ class HomeController extends AbstractController
 
         return $this->render('home/new_job.html.twig', [
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/search", name="search")
+     */
+    public function search(Request $request) {
+        $form = $this->createForm(RechercheType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $search = $form->get('search')->getData();
+            // recherche des posts et des jobs
+            $posts = [];
+            $jobs = [];
+        }
+
+        return $this->render('home/search.html.twig', [
+
         ]);
     }
 }
