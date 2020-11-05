@@ -13,13 +13,17 @@ use App\Manager\PostManager;
 use App\Service\FileUploader;
 use App\Service\SlugGenerator;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ */
 class HomeController extends AbstractController
 {
     /**
@@ -80,10 +84,14 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/new-post", name="new_post")
+     * @Route("/create/new-post", name="new_post")
      */
     public function newPost(Request $request, SlugGenerator $slugGenerator,
                             PostManager $postManager, FileUploader $fileUploader) {
+
+        if (!$this->isGranted('ROLE_USER')) {
+            throw new AccessDeniedHttpException();
+        }
         // l'instance que le form doit gérer
         $post = new Post();
 
@@ -125,7 +133,8 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/new-job", name="new_job")
+     * @Route("/create/new-job", name="new_job")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function newJob(Request $request, EventDispatcherInterface $eventDispatcher) {
         // l'instance que le form doit gérer

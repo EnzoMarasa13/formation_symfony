@@ -4,12 +4,21 @@
 namespace App\Service;
 
 
+use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\AbstractUnicodeString;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\String\UnicodeString;
 
 class SlugGenerator implements SluggerInterface
 {
+    public function __construct(Security $security)
+    {
+        /** @var UserInterface $user */
+        $user = $security->getToken();
+
+    }
+
     public function slug(string $string, string $separator = '-', string $locale = null): AbstractUnicodeString
     {
         $slug = $this->slugify($string);
