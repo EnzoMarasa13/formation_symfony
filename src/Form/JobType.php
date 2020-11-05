@@ -21,7 +21,7 @@ class JobType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Job::class,
+            'data_class' => Job::class
         ]);
     }
 }

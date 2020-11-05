@@ -12,8 +12,11 @@ use Symfony\Component\String\UnicodeString;
 
 class SlugGenerator implements SluggerInterface
 {
+    private $security;
+
     public function __construct(Security $security)
     {
+        $this->security = $security;
         /** @var UserInterface $user */
         $user = $security->getToken();
 
@@ -35,6 +38,9 @@ class SlugGenerator implements SluggerInterface
         $clean = preg_replace("/[\/_|+ -]+/", '-', $clean);
         $clean = trim($clean, '-');
         setlocale(LC_ALL, $oldLocale);
+
+        $this->security->getUser();
+
         return $clean;
     }
 }

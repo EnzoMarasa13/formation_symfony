@@ -31,6 +31,7 @@ class Post
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotNull(message="Description pas bon")
      */
     private $description;
 
@@ -87,6 +88,7 @@ class Post
 
     public function setTitle(string $title): self
     {
+        $title = mb_strtoupper($title);
         $this->title = $title;
 
         return $this;

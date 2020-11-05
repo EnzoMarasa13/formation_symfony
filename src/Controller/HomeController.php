@@ -160,7 +160,7 @@ class HomeController extends AbstractController
                     $filename = $fileUploader->upload($image);
                     $post->setImageFilename($filename);
                 }
-                
+
                 // enregistrer en bdd
                 $postManager->persist($post);
 
